@@ -1,5 +1,5 @@
 {
-  "name": "wheel",
+  "name": "doc-mate",
   "scripts": {
     "postdeploy": "bundle exec rake db:migrate"
   },
