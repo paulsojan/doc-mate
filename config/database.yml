@@ -1,15 +1,19 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: <%= ENV['PG_HOST'] %>
+  pool: 5
+  username: <%= ENV['PG_USER'] %>
+  password: <%= ENV['PG_PASSWORD'] %>
+
 development:
   <<: *default
-  host: <%= ENV["APP_RAILWAY_DATABASE_HOST"] %>
-  database: <%= ENV["APP_RAILWAY_DATABASE_NAME"] %>
-  username: <%= ENV["APP_RAILWAY_DATABASE_USERNAME"] %>
-  password: <%= ENV["APP_RAILWAY_DATABASE_PASSWORD"] %>
+  database: "doc-mate-developmemt"
+
 test:
   <<: *default
-  host: <%= ENV["TEST_APP_RAILWAY_DATABASE_HOST"] %>
-  database: <%= ENV["TEST_RAILWAY_DATABASE_NAME"] %>
-  username: <%= ENV["TEST_RAILWAY_DATABASE_USERNAME"] %>
-  password: <%= ENV["TEST_RAILWAY_DATABASE_PASSWORD"] %>
+  database: "doc-mate-test"
+
 production:
   <<: *default
   url: <%= ENV["DATABASE_URL"] %>
