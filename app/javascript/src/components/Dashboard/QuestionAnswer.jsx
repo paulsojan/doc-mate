@@ -26,6 +26,13 @@ const QuestionAnswer = () => {
   const { data: { data } = {}, isLoading } = useShowChat(id);
   const { mutate: chats, isLoading: isAnswerLoading } = useCreateChat();
 
+  const handleKeyPress = event => {
+    if (event.which === 13) {
+      event.preventDefault();
+      handleSubmit();
+    }
+  };
+
   const handleSubmit = () => {
     const payload = {
       question,
@@ -79,11 +86,12 @@ const QuestionAnswer = () => {
             rows={1}
             value={question}
             onChange={event => setQuestion(event.target.value)}
+            {...(!isAnswerLoading && { onKeyPress: handleKeyPress })}
           />
         </div>
         <Button
           className="ml-5"
-          disabled={isAnswerLoading}
+          disabled={isAnswerLoading || isEmpty(question)}
           icon={Send}
           size="large"
           onClick={handleSubmit}
@@ -92,4 +100,5 @@ const QuestionAnswer = () => {
     </div>
   );
 };
+
 export default QuestionAnswer;
