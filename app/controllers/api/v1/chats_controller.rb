@@ -7,13 +7,13 @@ class Api::V1::ChatsController < Api::V1::BaseController
     @chats = current_user.chats.all.order(created_at: :desc)
   end
 
-  def create
-    answer = QuestionAnswerService.new(question_answer_params[:question], question_answer_params[:chat_id]).process
-    render_json({ answer: })
-  end
-
   def show
     render_json(@chat)
+  end
+
+  def question
+    answer = QuestionAnswerService.new(question_answer_params[:question], params[:id]).process
+    render_json({ answer: })
   end
 
   private
@@ -23,6 +23,6 @@ class Api::V1::ChatsController < Api::V1::BaseController
     end
 
     def question_answer_params
-      params.require(:chats).permit(:question, :chat_id)
+      params.require(:chats).permit(:question)
     end
 end

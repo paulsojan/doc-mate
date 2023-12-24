@@ -9,6 +9,10 @@ namespace :api, defaults: { format: :json } do
 
     resources :users, only: [:show, :create, :update, :destroy], constraints: { id: /.*/ }
     resources :uploads, only: :create, controller: "chunks"
-    resources :chats, only: [:index, :create, :show]
+    resources :chats, only: [:index, :create, :show] do
+      member do
+        post :question
+      end
+    end
   end
 end
