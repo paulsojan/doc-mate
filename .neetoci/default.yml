@@ -15,6 +15,11 @@ global_job_config:
     - bundle install --jobs 1
     - yarn install
     - cache store
+  steps:
+    - name: Install pgvector
+      run: |
+        sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+        sudo apt-get install postgresql-14-pgvector
   jobs:
     - name: CiChecks
       commands:
