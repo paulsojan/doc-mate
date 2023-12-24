@@ -112,3 +112,5 @@ gem "neighbor"
 gem "dotenv-rails"
 
 gem "pdf-reader"
+
+gem "pgvector"
