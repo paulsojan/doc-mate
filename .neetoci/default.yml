@@ -15,12 +15,12 @@ global_job_config:
     - bundle install --jobs 1
     - yarn install
     - cache store
-  steps:
-    - name: Install pgvector
-      run: |
+  jobs:
+    - run: |
         sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
         sudo apt-get install postgresql-14-pgvector
-  jobs:
+    - run: sudo systemctl start postgresql
+    - run: sudo -u postgres psql -c 'CREATE EXTENSION vector'
     - name: CiChecks
       commands:
         - bundle exec ruby-audit check
