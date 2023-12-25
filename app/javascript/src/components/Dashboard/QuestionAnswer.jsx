@@ -23,19 +23,13 @@ const QuestionAnswer = () => {
 
   const { id } = useParams();
 
-  const { data: { data } = {}, isLoading } = useShowChat(id);
+  const { data: { data = {} } = {}, isLoading } = useShowChat(id);
   const { mutate: chats, isLoading: isAnswerLoading } = useCreateChat();
 
   const handleSubmit = () => {
-    const payload = {
-      question,
-      chat_id: id,
-    };
+    const payload = { chats: { question } };
 
-    chats(
-      { chats: payload },
-      { onSuccess: ({ data }) => setAnswer(data.answer) }
-    );
+    chats({ payload, id }, { onSuccess: ({ data }) => setAnswer(data.answer) });
   };
 
   const handleKeyPress = event => {
