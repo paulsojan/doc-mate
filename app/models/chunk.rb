@@ -6,5 +6,5 @@ class Chunk < ApplicationRecord
   validates :content, presence: true
   validates :embedding, presence: true
 
-  has_neighbors :embedding
+  has_neighbors :embedding, dimensions: 768
 end

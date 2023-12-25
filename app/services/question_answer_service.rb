@@ -30,14 +30,11 @@ class QuestionAnswerService
 
     def message_content(context)
       <<~CONTENT
-        Answer the question based on the context below:
-
-        Context:
-        #{context}
-
-        ---
-
-        Question: #{query}
+        Answer the question as precisely as possible using the provided context, and
+        if the question can't be answered based on the context,
+        say \"I don't know\". \n\n
+            Context: \n #{context}?\n
+            Question: \n #{query} \n
       CONTENT
     end
 end
