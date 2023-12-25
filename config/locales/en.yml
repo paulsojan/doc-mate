@@ -31,6 +31,8 @@
 
 en:
   not_found: "%{entity} not found!"
+  must_exists: "%{entity} must exist"
+  cannot_blank: "%{entity} can't be blank"
   invalid_credentials: "Incorrect email or password!"
   successfully_created: "%{entity} was successfully created!"
   successfully_updated: "%{entity} has been successfully updated!"
@@ -41,3 +43,7 @@ en:
   signup_successful: "Signup successful. Please login to continue"
   session:
     expiry: "Your session has expired. Please login again."
+  chat:
+    question:
+      response: "375°F"
+    invalid: "Chat not found"

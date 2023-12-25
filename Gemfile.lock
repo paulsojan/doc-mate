@@ -267,7 +267,6 @@ GEM
       ruby-rc4
       ttfunk
     pg (1.5.3)
-    pgvector (0.2.2)
     pragmatic_segmenter (0.3.23)
       unicode
     pry (0.14.2)
@@ -446,7 +445,6 @@ DEPENDENCIES
   neighbor
   pdf-reader
   pg
-  pgvector
   pry-byebug
   puma
   rails (~> 7.0.5)

@@ -23,7 +23,7 @@ const QuestionAnswer = () => {
 
   const { id } = useParams();
 
-  const { data: { data } = {}, isLoading } = useShowChat(id);
+  const { data: { data = {} } = {}, isLoading } = useShowChat(id);
   const { mutate: chats, isLoading: isAnswerLoading } = useCreateChat();
 
   const handleSubmit = () => {

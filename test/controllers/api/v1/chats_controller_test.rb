@@ -24,6 +24,13 @@ class Api::V1::ChatsControllerTest < ActionDispatch::IntegrationTest
     assert_equal @chat.id, response_body["id"]
   end
 
+  def test_should_respond_error_for_invalid_chat
+    get api_v1_chat_url("invalid"), headers: headers(@user)
+    assert_response :unprocessable_entity
+
+    assert_equal t("chat.invalid"), response_body["error"]
+  end
+
   def test_should_return_answer_for_question
     file = fixture_file_upload("test/sample.txt", "text/plain")
 
@@ -35,7 +42,7 @@ class Api::V1::ChatsControllerTest < ActionDispatch::IntegrationTest
       params: chat_params(question: "To what temperature the oven needs to be preheaten"), headers: headers(@user)
     assert_response :success
 
-    assert_includes response_body["answer"], "375°F"
+    assert_includes response_body["answer"], t("chat.question.response")
   end
 
   private

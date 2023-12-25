@@ -20,6 +20,8 @@ class Api::V1::ChatsController < Api::V1::BaseController
 
     def load_chat!
       @chat = current_user.chats.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      render_error(t("chat.invalid"))
     end
 
     def question_answer_params
