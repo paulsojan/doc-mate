@@ -15,7 +15,7 @@ const Sidebar = () => {
 
   const { t } = useTranslation();
 
-  const { data: { data = [] } = {}, isLoading } = useFetchChats();
+  const { data: { chats = [] } = [], isLoading } = useFetchChats();
   const { mutate: logout } = useLogout();
 
   const pathname = window.location.pathname;
@@ -48,7 +48,7 @@ const Sidebar = () => {
           </div>
         ) : (
           <ul className="mt-4 space-y-2 overflow-y-auto">
-            {data.chats.map(({ title, id }) => (
+            {chats.map(({ title, id }) => (
               <li key={id}>
                 <Button
                   label={title}

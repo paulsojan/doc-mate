@@ -25,7 +25,7 @@ const FileUpload = () => {
     data.append("file", event.target.files[0]);
 
     uploadFile(data, {
-      onSuccess: ({ data }) => history.push(`chat/${data.chat_id}`),
+      onSuccess: ({ chat_id }) => history.push(`chat/${chat_id}`),
     });
   };
 
