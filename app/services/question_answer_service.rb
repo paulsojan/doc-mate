@@ -21,7 +21,9 @@ class QuestionAnswerService
         distance: "cosine").first(5).map(&:content)
 
       response = google_palm.chat(messages: [{ role: "user", content: message_content(context) }])
-      response.raw_response.dig("candidates", 0, "content")
+      content = response.raw_response.dig("candidates", 0, "content")
+
+      content.nil? ? "No relevant information found" : content
     end
 
     def google_palm
