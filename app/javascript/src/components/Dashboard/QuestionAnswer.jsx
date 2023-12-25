@@ -13,6 +13,7 @@ import { isEmpty } from "ramda";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 
+import PageNotFound from "components/commons/PageNotFound";
 import { useCreateChat, useShowChat } from "hooks/reactQuery/useChatsApi";
 
 const QuestionAnswer = () => {
@@ -23,13 +24,13 @@ const QuestionAnswer = () => {
 
   const { id } = useParams();
 
-  const { data: { data = {} } = {}, isLoading } = useShowChat(id);
+  const { data: { title } = {}, isLoading, isError } = useShowChat(id);
   const { mutate: chats, isLoading: isAnswerLoading } = useCreateChat();
 
   const handleSubmit = () => {
     const payload = { chats: { question } };
 
-    chats({ payload, id }, { onSuccess: ({ data }) => setAnswer(data.answer) });
+    chats({ payload, id }, { onSuccess: ({ answer }) => setAnswer(answer) });
   };
 
   const handleKeyPress = event => {
@@ -52,12 +53,12 @@ const QuestionAnswer = () => {
     );
   }
 
+  if (isError) return <PageNotFound />;
+
   return (
     <div className="flex h-screen flex-col">
       <div className="flex justify-center bg-gray-200 p-4 font-semibold">
-        <Typography style="body1">
-          {t("chatWith", { title: data.title })}
-        </Typography>
+        <Typography style="body1">{t("chatWith", { title })}</Typography>
       </div>
       {(!isEmpty(answer) || isAnswerLoading) && (
         <div

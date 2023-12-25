@@ -45,13 +45,20 @@ const handleErrorResponse = (error, authDispatch) => {
   } else {
     Toastr.error(error.response?.data?.error || error.message);
   }
-
-  return Promise.reject(error);
 };
 
 const registerIntercepts = authDispatch => {
-  axios.interceptors.response.use(handleSuccessResponse, error =>
-    handleErrorResponse(error, authDispatch)
+  axios.interceptors.response.use(
+    response => {
+      handleSuccessResponse(response);
+
+      return response.data;
+    },
+    error => {
+      handleErrorResponse(error, authDispatch);
+
+      return Promise.reject(error);
+    }
   );
 };
 
