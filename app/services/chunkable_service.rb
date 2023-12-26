@@ -18,7 +18,6 @@ class ChunkableService
 
   private
 
-    # remove /n from content
     def processed_content
       content = ""
       if file_type == "application/pdf"
