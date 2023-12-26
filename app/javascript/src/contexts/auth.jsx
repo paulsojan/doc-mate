@@ -1,7 +1,5 @@
 import React from "react";
 
-import PropTypes from "prop-types";
-
 import authReducer from "reducers/auth";
 import { getFromLocalStorage } from "utils/storage";
 
@@ -47,9 +45,5 @@ const useAuthDispatch = () => {
 };
 
 const useAuth = () => [useAuthState(), useAuthDispatch()];
-
-AuthProvider.propTypes = {
-  children: PropTypes.node,
-};
 
 export { AuthProvider, useAuthState, useAuthDispatch, useAuth };

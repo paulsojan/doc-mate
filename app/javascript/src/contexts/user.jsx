@@ -1,7 +1,5 @@
 import React from "react";
 
-import PropTypes from "prop-types";
-
 import userReducer from "reducers/user";
 
 const UserStateContext = React.createContext();
@@ -39,9 +37,5 @@ const useUserDispatch = () => {
 };
 
 const useUser = () => [useUserState(), useUserDispatch()];
-
-UserProvider.propTypes = {
-  children: PropTypes.node,
-};
 
 export { UserProvider, useUserState, useUserDispatch, useUser };
