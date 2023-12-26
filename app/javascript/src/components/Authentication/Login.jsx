@@ -27,7 +27,7 @@ const Login = ({ history }) => {
     login(
       { email, password },
       {
-        onSuccess: ({ data: { auth_token, user, is_admin } }) => {
+        onSuccess: ({ auth_token, user, is_admin }) => {
           authDispatch({
             type: "LOGIN",
             payload: { auth_token, email, is_admin },
