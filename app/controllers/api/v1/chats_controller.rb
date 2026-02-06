@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class Api::V1::ChatsController < Api::V1::BaseController
-  before_action :load_chat!, only: :show
+  before_action :load_chat!, only: %i[show question]
 
   def index
-    @chats = current_user.chats.all.order(created_at: :desc)
+    @chats = current_user.chats.order(created_at: :desc)
   end
 
   def show
@@ -12,7 +12,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
   end
 
   def question
-    answer = QuestionAnswerService.new(question_answer_params[:question], params[:id]).process
+    answer = QuestionAnswerService.new(question_answer_params[:question], @chat.id).process
     render_json({ answer: })
   end
 
