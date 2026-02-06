@@ -11,8 +11,8 @@ const Dashboard = () => (
     <Sidebar />
     <main className="flex-1 overflow-y-auto">
       <Switch>
-        {DASHBOARD_ROUTES.map(({ path, component }) => (
-          <Route exact component={component} key={path} path={path} />
+        {DASHBOARD_ROUTES.map(({ path, component: Component }) => (
+          <Route exact component={Component} key={path} path={path} />
         ))}
         <Route component={PageNotFound} path="*" />
       </Switch>
