@@ -3,9 +3,9 @@
 class QuestionAnswerService
   attr_reader :query, :chat
 
-  def initialize(query, chat_id)
+  def initialize(query, chat)
     @query = query
-    @chat = Chat.find(chat_id)
+    @chat = chat
   end
 
   def process
