@@ -4,7 +4,7 @@ import { LeftArrow } from "@bigbinary/neeto-icons";
 import { Button, Spinner, Typography } from "@bigbinary/neetoui";
 import classNames from "classnames";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 
 import { useLogout } from "hooks/reactQuery/useAuthenticationApi";
 import { useFetchChats } from "hooks/reactQuery/useChatsApi";
@@ -12,50 +12,51 @@ import routes from "routes";
 
 const Sidebar = () => {
   const history = useHistory();
-
   const { t } = useTranslation();
+  const match = useRouteMatch(routes.chat.show);
 
-  const { data: { chats = [] } = [], isLoading } = useFetchChats();
+  const { data: { chats = [] } = {}, isLoading } = useFetchChats();
   const { mutate: logout } = useLogout();
 
-  const pathname = window.location.pathname;
-  const urlChatId = pathname.split("/")[2];
+  const activeChatId = match?.params?.id;
 
   return (
     <div className="flex h-screen w-64 flex-col bg-gray-800">
       <div className="p-4">
-        <h1 className="text-lg font-bold text-white">{t("title")}</h1>
+        <Typography className="text-white" style="h4" weight="bold">
+          {t("title")}
+        </Typography>
       </div>
-      <div className="mt-4 flex w-2/3 justify-center">
+      <div className="mt-4 flex justify-center px-6">
         <Button
-          className="border border-dashed border-white bg-gray-600 p-3 text-white hover:bg-gray-700"
+          className="w-full border border-dashed border-white bg-gray-600 p-3 text-white hover:bg-gray-700"
           label={t("newChat")}
           style="text"
           to={routes.root}
         />
       </div>
       <Typography
-        className="mt-10 ml-4 text-white"
-        style="body2"
-        weight="medium"
+        className="ml-4 mt-10 text-gray-400 uppercase tracking-widest"
+        style="body3"
+        weight="bold"
       >
         {t("chats")}
       </Typography>
-      <nav className="ml-2 mr-2 flex-grow">
+      <nav className="mt-4 flex-grow overflow-y-auto px-2">
         {isLoading ? (
-          <div className="flex h-1/2 items-center justify-center">
+          <div className="flex h-20 items-center justify-center">
             <Spinner theme="light" />
           </div>
         ) : (
-          <ul className="mt-4 space-y-2 overflow-y-auto">
+          <ul className="space-y-2">
             {chats.map(({ title, id }) => (
               <li key={id}>
                 <Button
                   label={title}
                   style="text"
                   className={classNames(
-                    "block w-full rounded-md py-2 px-4 font-normal text-gray-300 hover:bg-gray-700",
-                    { "bg-gray-700": urlChatId === id }
+                    "flex w-full justify-start rounded-md px-4 py-2 font-normal text-gray-300 hover:bg-gray-700",
+                    { "bg-gray-700 text-white": activeChatId === String(id) }
                   )}
                   onClick={() => history.push(`/chat/${id}`)}
                 />
@@ -64,13 +65,13 @@ const Sidebar = () => {
           </ul>
         )}
       </nav>
-      <hr />
+      <hr className="border-gray-700" />
       <div
-        className="m-2 flex cursor-pointer rounded-md p-3 hover:bg-gray-700"
+        className="m-2 flex cursor-pointer items-center rounded-md p-3 text-gray-300 transition-colors duration-200 hover:bg-gray-700 hover:text-white"
         onClick={() => logout()}
       >
-        <LeftArrow color="#ffffff" size={20} />
-        <Typography className="ml-1 text-white" style="body2">
+        <LeftArrow size={20} />
+        <Typography className="ml-2" style="body2">
           {t("logout")}
         </Typography>
       </div>
