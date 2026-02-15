@@ -6,4 +6,6 @@ class Chat < ApplicationRecord
   belongs_to :user
 
   validates :title, presence: true
+
+  scope :ordered, -> { order(created_at: :desc) }
 end
