@@ -1,5 +1,5 @@
 import React from "react";
-
+import PropTypes from "prop-types";
 import { Route, Switch } from "react-router-dom";
 
 import PageNotFound from "components/commons/PageNotFound";
@@ -12,11 +12,16 @@ const Dashboard = () => (
     <div className="w-full">
       <Switch>
         {DASHBOARD_ROUTES.map(({ path, component }) => (
-          <Route exact component={component} key={path} path={path} />
+          <Route exact key={path} path={path} component={component} />
         ))}
-        <Route component={PageNotFound} path="*" />
+        <Route path="*" component={PageNotFound} />
       </Switch>
     </div>
   </div>
 );
+
+Dashboard.propTypes = {
+  // No props currently, but added for future-proofing
+};
+
 export default Dashboard;
