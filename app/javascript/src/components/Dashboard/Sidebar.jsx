@@ -3,14 +3,13 @@ import { LeftArrow } from "@bigbinary/neeto-icons";
 import { Button, Spinner, Typography } from "@bigbinary/neetoui";
 import classNames from "classnames";
 import { useTranslation } from "react-i18next";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { useLogout } from "hooks/reactQuery/useAuthenticationApi";
 import { useFetchChats } from "hooks/reactQuery/useChatsApi";
 import routes from "routes";
 
-// Component to render the list of chats
-const ChatList = ({ chats, activeChatId, onChatSelect }) => (
+const ChatList = ({ chats, urlChatId, onChatSelect }) => (
   <ul className="mt-4 space-y-2 overflow-y-auto">
     {chats.map(({ title, id }) => (
       <li key={id}>
@@ -19,7 +18,7 @@ const ChatList = ({ chats, activeChatId, onChatSelect }) => (
           style="text"
           className={classNames(
             "block w-full rounded-md py-2 px-4 font-normal text-gray-300 hover:bg-gray-700",
-            { "bg-gray-700": activeChatId === id }
+            { "bg-gray-700": urlChatId === id }
           )}
           onClick={() => onChatSelect(id)}
         />
@@ -28,31 +27,16 @@ const ChatList = ({ chats, activeChatId, onChatSelect }) => (
   </ul>
 );
 
-// Component for the logout button
-const LogoutButton = ({ onLogout }) => (
-  <div
-    className="m-2 flex cursor-pointer rounded-md p-3 hover:bg-gray-700"
-    onClick={onLogout}
-  >
-    <LeftArrow color="#ffffff" size={20} />
-    <Typography className="ml-1 text-white" style="body2">
-      Logout
-    </Typography>
-  </div>
-);
-
 const Sidebar = () => {
   const history = useHistory();
-  const location = useLocation();
   const { t } = useTranslation();
 
-  const { data: { chats = [] } = [], isLoading } = useFetchChats();
+  const { data: { chats = [] } = {}, isLoading } = useFetchChats();
   const { mutate: logout } = useLogout();
 
-  // Extract chat id from the current URL path
-  const urlChatId = location.pathname.split("/")[2];
+  const pathname = window.location.pathname;
+  const urlChatId = pathname.split("/")[2];
 
-  // Handler for chat selection
   const handleChatSelect = (id) => {
     history.push(`/chat/${id}`);
   };
@@ -83,15 +67,19 @@ const Sidebar = () => {
             <Spinner theme="light" />
           </div>
         ) : (
-          <ChatList
-            chats={chats}
-            activeChatId={urlChatId}
-            onChatSelect={handleChatSelect}
-          />
+          <ChatList chats={chats} urlChatId={urlChatId} onChatSelect={handleChatSelect} />
         )}
       </nav>
       <hr />
-      <LogoutButton onLogout={logout} />
+      <div
+        className="m-2 flex cursor-pointer rounded-md p-3 hover:bg-gray-700"
+        onClick={() => logout()}
+      >
+        <LeftArrow color="#ffffff" size={20} />
+        <Typography className="ml-1 text-white" style="body2">
+          {t("logout")}
+        </Typography>
+      </div>
     </div>
   );
 };
