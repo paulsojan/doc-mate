@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 
 import { LeftArrow } from "@bigbinary/neeto-icons";
 import { Button, Spinner, Typography } from "@bigbinary/neetoui";
@@ -10,42 +10,43 @@ import { useLogout } from "hooks/reactQuery/useAuthenticationApi";
 import { useFetchChats } from "hooks/reactQuery/useChatsApi";
 import routes from "routes";
 
-const ChatItem = ({ title, id, isActive, onClick }) => (
-  <li key={id}>
-    <Button
-      label={title}
-      style="text"
-      className={classNames(
-        "block w-full rounded-md py-2 px-4 font-normal text-gray-300 hover:bg-gray-700",
-        { "bg-gray-700": isActive }
-      )}
-      onClick={onClick}
-    />
-  </li>
-);
-
 const Sidebar = () => {
   const history = useHistory();
   const location = useLocation();
 
   const { t } = useTranslation();
 
-  const { data: { chats = [] } = [], isLoading } = useFetchChats();
+  const { data, isLoading } = useFetchChats();
   const { mutate: logout } = useLogout();
 
-  const pathname = location.pathname;
-  const urlChatId = useMemo(() => pathname.split("/")[2], [pathname]);
+  // Normalise the response shape coming from the API / axios so the component
+  // can reliably work with `chats` as an array.
+  const chats = useMemo(() => {
+    if (!data) return [];
 
-  const handleChatClick = useCallback(
-    id => () => history.push(`/chat/${id}`),
-    [history]
-  );
+    // react-query's `data` can be the axios response object or the raw payload
+    // depending on how the queryFn is implemented. Handle common shapes here.
+    if (Array.isArray(data)) return data;
+
+    if (data.data) {
+      if (Array.isArray(data.data.chats)) return data.data.chats;
+      if (Array.isArray(data.data)) return data.data;
+    }
+
+    if (Array.isArray(data.chats)) return data.chats;
+
+    return [];
+  }, [data]);
+
+  const pathname = location.pathname;
+  const urlChatId = pathname.split("/")[2];
 
   return (
     <div className="flex h-screen w-64 flex-col bg-gray-800">
       <div className="p-4">
         <h1 className="text-lg font-bold text-white">{t("title")}</h1>
       </div>
+
       <div className="mt-4 flex w-2/3 justify-center">
         <Button
           className="border border-dashed border-white bg-gray-600 p-3 text-white hover:bg-gray-700"
@@ -54,6 +55,7 @@ const Sidebar = () => {
           to={routes.root}
         />
       </div>
+
       <Typography
         className="mt-10 ml-4 text-white"
         style="body2"
@@ -61,6 +63,7 @@ const Sidebar = () => {
       >
         {t("chats")}
       </Typography>
+
       <nav className="ml-2 mr-2 flex-grow">
         {isLoading ? (
           <div className="flex h-1/2 items-center justify-center">
@@ -68,33 +71,37 @@ const Sidebar = () => {
           </div>
         ) : (
           <ul className="mt-4 space-y-2 overflow-y-auto">
-            {Array.isArray(chats) && chats.length > 0 ? (
-              chats.map(({ title, id }) => (
-                <ChatItem
-                  key={id}
-                  title={title}
-                  id={id}
-                  isActive={String(id) === String(urlChatId)}
-                  onClick={handleChatClick(id)}
-                />
-              ))
+            {chats.length === 0 ? (
+              <li className="px-4 text-sm text-gray-400">{t("noChats")}</li>
             ) : (
-              <li>
-                <Typography className="ml-1 text-gray-400" style="body2">
-                  {t("noChats", "No chats found")}
-                </Typography>
-              </li>
+              chats.map(({ title, id }) => (
+                <li key={id}>
+                  <Button
+                    label={title}
+                    style="text"
+                    className={classNames(
+                      "block w-full rounded-md py-2 px-4 font-normal text-gray-300 hover:bg-gray-700",
+                      { "bg-gray-700": String(id) === String(urlChatId) }
+                    )}
+                    onClick={() => history.push(`/chat/${id}`)}
+                  />
+                </li>
+              ))
             )}
           </ul>
         )}
       </nav>
+
       <hr />
+
       <div
         className="m-2 flex cursor-pointer rounded-md p-3 hover:bg-gray-700"
         onClick={() => logout()}
         role="button"
         tabIndex={0}
-        onKeyPress={e => e.key === "Enter" && logout()}
+        onKeyPress={e => {
+          if (e.key === "Enter" || e.key === " ") logout();
+        }}
       >
         <LeftArrow color="#ffffff" size={20} />
         <Typography className="ml-1 text-white" style="body2">
