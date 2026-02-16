@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { LeftArrow } from "@bigbinary/neeto-icons";
 import { Button, Spinner, Typography } from "@bigbinary/neetoui";
 import classNames from "classnames";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { useLogout } from "hooks/reactQuery/useAuthenticationApi";
 import { useFetchChats } from "hooks/reactQuery/useChatsApi";
@@ -12,14 +12,19 @@ import routes from "routes";
 
 const Sidebar = () => {
   const history = useHistory();
+  const location = useLocation();
 
   const { t } = useTranslation();
 
-  const { data: { chats = [] } = [], isLoading } = useFetchChats();
+  const { data, isLoading } = useFetchChats();
+  const chats = data?.chats ?? [];
   const { mutate: logout } = useLogout();
 
-  const pathname = window.location.pathname;
-  const urlChatId = pathname.split("/")[2];
+  const urlChatId = useMemo(() => {
+    // Expecting path like /chat/:id
+    const parts = location.pathname.split("/").filter(Boolean);
+    return parts[1] || "";
+  }, [location.pathname]);
 
   return (
     <div className="flex h-screen w-64 flex-col bg-gray-800">
@@ -55,7 +60,7 @@ const Sidebar = () => {
                   style="text"
                   className={classNames(
                     "block w-full rounded-md py-2 px-4 font-normal text-gray-300 hover:bg-gray-700",
-                    { "bg-gray-700": urlChatId === id }
+                    { "bg-gray-700": String(id) === String(urlChatId) }
                   )}
                   onClick={() => history.push(`/chat/${id}`)}
                 />
